@@ -20,6 +20,7 @@ class Tone:
 		self.sample_rate = sample_rate
 
 		self.generate_wave()
+		self.generate_buffer()
 	
 	def generate_wave(self):
 		wave_len = int(self.duration * self.sample_rate)
@@ -27,8 +28,8 @@ class Tone:
 
 		self.wave = [sin(2 * pi * i / period) * 127 for i in range(wave_len)]
 	
-	def buffer(self):
-		return struct.pack("f" * len(self.wave), *self.wave)
+	def generate_buffer(self):
+		self.buffer = struct.pack("f" * len(self.wave), *self.wave)
 
 def make_tone(freq):
 	return Tone(freq, WAVE_DURATION, SAMPLE_RATE)
@@ -68,7 +69,7 @@ if  __name__ == "__main__":
 			print("\t{}".format(b), end="")
 			sys.stdout.flush()
 
-			stream.write(tones[b].buffer())
+			stream.write(tones[b].buffer)
 
 		print("") # newline
 
