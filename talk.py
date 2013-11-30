@@ -48,9 +48,29 @@ if  __name__ == "__main__":
 	tones = [make_tone(freq) for freq in freqs]
 
 	p = pyaudio.PyAudio()
-	stream = p.open(format=pyaudio.paFloat32, channels=1, rate=SAMPLE_RATE, frames_per_buffer=(WAVE_DURATION * SAMPLE_RATE), output=True)
+	stream = p.open(format=pyaudio.paFloat32, channels=1, rate=SAMPLE_RATE, \
+		frames_per_buffer=(WAVE_DURATION * SAMPLE_RATE), output=True)
+	
+	# play data from stdin
+	while True:
+		bytes = sys.stdin.buffer.read(1)
+		
+		if len(bytes) <= 0:
+			break
+		
+		byte = bytes[0]
+		bits = [1 if (byte & (1 << i)) != 0 else 0 for i in range(7, -1, -1)]
 
-	stream.write(tones[0].buffer())
+		str_b = chr(byte) if 32 <= byte <= 126 else "(unsafe)"
+		print("{} (n={})".format(str_b, byte))
+		
+		for b in bits:
+			print("\t{}".format(b), end="")
+			sys.stdout.flush()
+
+			stream.write(tones[b].buffer())
+
+		print("") # newline
 
 	stream.stop_stream()
 	stream.close()
