@@ -5,7 +5,7 @@ from math import pi, sin
 import sys
 
 SAMPLE_RATE = int(48 * 1000) # hertz
-WAVE_DURATION = 1 # seconds
+WAVE_DURATION = 0.25 # seconds
 
 class Tone:
 	"""Represents a sine wave for a given frequency.
@@ -49,7 +49,7 @@ if  __name__ == "__main__":
 
 	p = pyaudio.PyAudio()
 	stream = p.open(format=pyaudio.paFloat32, channels=1, rate=SAMPLE_RATE, \
-		frames_per_buffer=(WAVE_DURATION * SAMPLE_RATE), output=True)
+		frames_per_buffer=int(WAVE_DURATION * SAMPLE_RATE), output=True)
 	
 	# play data from stdin
 	while True:
